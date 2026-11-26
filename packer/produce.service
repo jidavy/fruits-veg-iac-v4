@@ -1,0 +1,14 @@
+[Unit]
+Description=Java Spring Produce Service
+After=network.target
+
+[Service]
+User=ec2-user
+Group=ec2-user
+WorkingDirectory=/home/ec2-user/fruits-veg_market/java
+ExecStart=/usr/bin/java -jar /home/ec2-user/fruits-veg_market/java/target/produce-app-0.0.1-SNAPSHOT.jar --server.port=9090
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

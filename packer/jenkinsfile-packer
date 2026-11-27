@@ -1,0 +1,35 @@
+pipeline {
+  agent any
+  stages {
+    stage('Packer init') {
+      steps {
+        dir('packer') {
+          sh 'packer init .'
+        }
+      }
+    }
+    stage('Packer validate') {
+      steps {
+        dir('packer') {
+          sh 'packer validate .'
+        }
+      }
+    }
+    stage('Packer build') {
+      steps {
+        dir('packer') {
+          sh 'packer build -color=false .'
+        }
+      }
+    }
+    stage('Show AMIs') {
+      steps {
+        sh '''
+          aws ec2 describe-images --owners self --region eu-west-2 \
+            --filters "Name=name,Values=nginx-git-by-packer,python-java-git-by-packer" \
+            --query "Images[].[Name,ImageId]" --output table
+        '''
+      }
+    }
+  }
+}
